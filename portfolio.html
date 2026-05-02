@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prince — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --neon:#00f5c4;
+  --neon2:#00aaff;
+  --accent:#ff3cac;
+  --bg:#050a12;
+  --bg2:#0a1220;
+  --bg3:#0e1a2e;
+  --card:#0d1828;
+  --border:rgba(0,245,196,0.15);
+  --border2:rgba(0,170,255,0.15);
+  --text:#c8e6ff;
+  --muted:#4a6a8a;
+  --grid:rgba(0,245,196,0.04);
+}
+
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:'Rajdhani',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* CUSTOM CURSOR */
+#cursor{
+  width:10px;height:10px;
+  background:var(--neon);
+  border-radius:50%;
+  position:fixed;
+  pointer-events:none;
+  z-index:9999;
+  transition:transform 0.1s;
+  mix-blend-mode:screen;
+}
+#cursor-ring{
+  width:36px;height:36px;
+  border:1px solid rgba(0,245,196,0.5);
+  border-radius:50%;
+  position:fixed;
+  pointer-events:none;
+  z-index:9998;
+  transition:all 0.12s ease;
+}
+
+/* GRID BACKGROUND */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* SCROLL PROGRESS */
+#progress-bar{
+  position:fixed;top:0;left:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--neon),var(--neon2));
+  z-index:9997;
+  width:0%;
+  transition:width 0.1s;
+  box-shadow:0 0 8px var(--neon);
+}
+
+/* PRELOADER */
+#preloader{
+  position:fixed;inset:0;
+  background:var(--bg);
+  z-index:9996;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2rem;
+  transition:opacity 0.8s ease, visibility 0.8s;
+}
+#preloader.hidden{opacity:0;visibility:hidden;}
+
+.pre-name{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(2rem,6vw,4rem);
+  font-weight:900;
+  color:#fff;
+  letter-spacing:8px;
+  overflow:hidden;
+}
+.pre-name span{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(30px);
+  animation:letterUp 0.4s forwards;
+}
+.pre-bar{
+  width:200px;height:1px;
+  background:var(--bg3);
+  position:relative;
+  overflow:hidden;
+}
+.pre-bar::after{
+  content:'';
+  position:absolute;
+  top:0;left:-100%;
+  width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,var(--neon),transparent);
+  animation:scanBar 1.5s 0.5s forwards;
+}
+.pre-pct{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.75rem;
+  color:var(--neon);
+  letter-spacing:3px;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:500;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:1.2rem 5rem;
+  background:rgba(5,10,18,0.9);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  transform:translateY(-100%);
+  animation:slideDown 0.6s 2.5s forwards;
+}
+.logo{
+  font-family:'Orbitron',monospace;
+  font-size:1.3rem;
+  font-weight:900;
+  color:var(--neon);
+  letter-spacing:4px;
+  text-shadow:0 0 20px rgba(0,245,196,0.4);
+  text-decoration:none;
+}
+.nav-links{display:flex;gap:2.5rem;list-style:none;}
+.nav-links a{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.72rem;
+  color:var(--muted);
+  text-decoration:none;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  transition:color 0.3s;
+  position:relative;
+}
+.nav-links a::after{
+  content:'';
+  position:absolute;
+  bottom:-4px;left:0;right:0;
+  height:1px;
+  background:var(--neon);
+  transform:scaleX(0);
+  transition:transform 0.3s;
+  transform-origin:left;
+}
+.nav-links a:hover{color:var(--neon);}
+.nav-links a:hover::after{transform:scaleX(1);}
+
+/* SECTIONS */
+section{
+  position:relative;
+  z-index:1;
+  min-height:100vh;
+  padding:8rem 5rem 5rem;
+}
+
+/* SECTION HEADER */
+.sec-header{
+  margin-bottom:4rem;
+}
+.sec-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:4px;
+  color:var(--neon);
+  text-transform:uppercase;
+  display:block;
+  margin-bottom:0.8rem;
+}
+.sec-title{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(2rem,4vw,3rem);
+  font-weight:900;
+  color:#fff;
+  line-height:1.1;
+}
+.sec-title span{color:var(--neon);}
+.sec-line{
+  width:60px;height:2px;
+  background:linear-gradient(90deg,var(--neon),transparent);
+  margin-top:1.2rem;
+}
+
+/* HERO */
+#hero{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-height:100vh;
+  padding-top:10rem;
+}
+.hero-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.75rem;
+  letter-spacing:5px;
+  color:var(--neon);
+  text-transform:uppercase;
+  opacity:0;
+  animation:fadeUp 0.6s 2.6s forwards;
+}
+.hero-name{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(3.5rem,9vw,8rem);
+  font-weight:900;
+  line-height:1;
+  color:#fff;
+  margin-top:1rem;
+  opacity:0;
+  animation:fadeUp 0.7s 2.8s forwards;
+}
+.hero-name .hl{color:var(--neon);}
+.hero-sub{
+  font-size:clamp(1rem,2vw,1.4rem);
+  font-weight:300;
+  color:var(--muted);
+  margin-top:1rem;
+  letter-spacing:3px;
+  opacity:0;
+  animation:fadeUp 0.7s 3s forwards;
+}
+.hero-sub b{color:var(--neon2);font-weight:600;}
+.hero-desc{
+  max-width:540px;
+  font-size:1.05rem;
+  line-height:1.8;
+  color:var(--muted);
+  margin-top:1.5rem;
+  opacity:0;
+  animation:fadeUp 0.7s 3.1s forwards;
+}
+.hero-cta{
+  display:flex;
+  gap:1.5rem;
+  margin-top:3rem;
+  opacity:0;
+  animation:fadeUp 0.7s 3.3s forwards;
+}
+.btn{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.75rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  text-decoration:none;
+  padding:1rem 2.2rem;
+  border:1px solid var(--neon);
+  color:var(--neon);
+  background:transparent;
+  cursor:none;
+  transition:all 0.3s;
+  clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);
+  display:inline-block;
+}
+.btn:hover{
+  background:var(--neon);
+  color:var(--bg);
+  box-shadow:0 0 30px rgba(0,245,196,0.3);
+}
+.btn-ghost{
+  border-color:var(--muted);
+  color:var(--muted);
+}
+.btn-ghost:hover{
+  background:var(--muted);
+  color:var(--bg);
+  box-shadow:none;
+}
+.avail-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:0.6rem;
+  margin-top:2.5rem;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:2px;
+  color:var(--neon);
+  opacity:0;
+  animation:fadeUp 0.7s 3.5s forwards;
+}
+.avail-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--neon);
+  animation:pulse 2s infinite;
+}
+
+/* ABOUT */
+#about{
+  display:grid;
+  grid-template-columns:1fr 1.3fr;
+  gap:6rem;
+  align-items:start;
+}
+.about-img-wrap{
+  position:relative;
+}
+.about-img-frame{
+  width:100%;
+  aspect-ratio:3/4;
+  background:var(--card);
+  border:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.about-img-frame::before{
+  content:'';
+  position:absolute;
+  top:-2px;left:-2px;right:-2px;bottom:-2px;
+  background:linear-gradient(45deg,var(--neon),transparent,var(--neon2),transparent);
+  z-index:-1;
+  animation:borderSpin 4s linear infinite;
+}
+.about-img-placeholder{
+  width:100%;height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Orbitron',monospace;
+  font-size:0.7rem;
+  color:var(--muted);
+  letter-spacing:3px;
+  flex-direction:column;
+  gap:1rem;
+}
+.about-img-placeholder .big-initial{
+  font-size:6rem;
+  font-weight:900;
+  color:var(--neon);
+  opacity:0.2;
+}
+.about-corner{
+  position:absolute;
+  width:20px;height:20px;
+  border-color:var(--neon);
+  border-style:solid;
+}
+.about-corner.tl{top:-1px;left:-1px;border-width:2px 0 0 2px;}
+.about-corner.tr{top:-1px;right:-1px;border-width:2px 2px 0 0;}
+.about-corner.bl{bottom:-1px;left:-1px;border-width:0 0 2px 2px;}
+.about-corner.br{bottom:-1px;right:-1px;border-width:0 2px 2px 0;}
+
+.about-right{}
+.about-bio{
+  font-size:1.05rem;
+  line-height:1.9;
+  color:var(--muted);
+  margin-bottom:2.5rem;
+}
+.about-bio span{color:var(--text);}
+
+.rpg-stats{margin-bottom:3rem;}
+.rpg-stat{margin-bottom:1.2rem;}
+.rpg-stat-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:0.4rem;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:2px;
+  color:var(--muted);
+}
+.rpg-stat-header span:last-child{color:var(--neon);}
+.rpg-bar{
+  height:3px;
+  background:rgba(255,255,255,0.05);
+  position:relative;
+  overflow:hidden;
+}
+.rpg-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--neon),var(--neon2));
+  width:0%;
+  transition:width 1.5s cubic-bezier(0.4,0,0.2,1);
+  box-shadow:0 0 8px var(--neon);
+}
+
+.timeline{border-left:1px solid var(--border);padding-left:2rem;}
+.tl-item{
+  position:relative;
+  margin-bottom:1.8rem;
+}
+.tl-item::before{
+  content:'';
+  position:absolute;
+  left:-2.4rem;
+  top:6px;
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--neon);
+  box-shadow:0 0 8px var(--neon);
+}
+.tl-year{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.7rem;
+  color:var(--neon);
+  letter-spacing:2px;
+}
+.tl-text{
+  font-size:0.95rem;
+  color:var(--muted);
+  margin-top:0.3rem;
+}
+
+/* SERVICES */
+#services{padding-top:8rem;}
+.services-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;
+}
+.service-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:2rem;
+  position:relative;
+  overflow:hidden;
+  transition:border-color 0.3s, transform 0.3s;
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+}
+.service-card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(0,245,196,0.04),transparent);
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.service-card:hover{
+  border-color:var(--neon);
+  transform:translateY(-4px);
+}
+.service-card:hover::before{opacity:1;}
+.service-icon{
+  font-family:'Orbitron',monospace;
+  font-size:1.8rem;
+  color:var(--neon);
+  margin-bottom:1.2rem;
+  display:block;
+}
+.service-name{
+  font-family:'Orbitron',monospace;
+  font-size:0.9rem;
+  font-weight:700;
+  color:#fff;
+  letter-spacing:2px;
+  margin-bottom:0.8rem;
+  text-transform:uppercase;
+}
+.service-desc{
+  font-size:0.95rem;
+  color:var(--muted);
+  line-height:1.7;
+  margin-bottom:1.5rem;
+}
+.service-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.65rem;
+  letter-spacing:2px;
+  color:var(--neon);
+  border:1px solid var(--border);
+  padding:0.3rem 0.8rem;
+  display:inline-block;
+}
+.service-btn{
+  display:block;
+  margin-top:1.5rem;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.7rem;
+  letter-spacing:2px;
+  color:var(--neon);
+  text-transform:uppercase;
+  cursor:none;
+  background:none;
+  border:none;
+  padding:0;
+  transition:letter-spacing 0.3s;
+}
+.service-btn:hover{letter-spacing:4px;}
+
+/* PROJECTS */
+#projects{padding-top:8rem;}
+.proj-tabs{
+  display:flex;
+  gap:0;
+  margin-bottom:3rem;
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.proj-tab{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.7rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--muted);
+  padding:0.8rem 1.5rem;
+  cursor:none;
+  background:none;
+  border:none;
+  border-bottom:2px solid transparent;
+  margin-bottom:-1px;
+  transition:all 0.3s;
+}
+.proj-tab:hover{color:var(--text);}
+.proj-tab.active{
+  color:var(--neon);
+  border-bottom-color:var(--neon);
+}
+.proj-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:1.5rem;
+}
+.proj-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  overflow:hidden;
+  transition:border-color 0.3s,transform 0.3s;
+  position:relative;
+}
+.proj-card:hover{
+  border-color:var(--neon2);
+  transform:translateY(-4px);
+}
+.proj-thumb{
+  width:100%;
+  aspect-ratio:16/9;
+  background:var(--bg3);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.65rem;
+  color:var(--muted);
+  letter-spacing:3px;
+  position:relative;
+  overflow:hidden;
+}
+.proj-thumb::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(0,245,196,0.06),transparent);
+}
+.proj-body{padding:1.5rem;}
+.proj-cat{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:3px;
+  color:var(--neon);
+  text-transform:uppercase;
+  margin-bottom:0.6rem;
+}
+.proj-name{
+  font-family:'Orbitron',monospace;
+  font-size:0.9rem;
+  font-weight:700;
+  color:#fff;
+  margin-bottom:0.8rem;
+  letter-spacing:1px;
+}
+.proj-desc{
+  font-size:0.9rem;
+  color:var(--muted);
+  line-height:1.7;
+  margin-bottom:1.2rem;
+}
+.proj-links{display:flex;gap:1rem;}
+.proj-link{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.65rem;
+  letter-spacing:2px;
+  color:var(--neon2);
+  text-decoration:none;
+  text-transform:uppercase;
+  transition:color 0.2s;
+}
+.proj-link:hover{color:var(--neon);}
+
+/* SKILLS */
+#skills{padding-top:8rem;}
+.skills-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:1rem;
+}
+.skill-chip{
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:1.2rem 1.5rem;
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  transition:border-color 0.3s,transform 0.3s;
+  position:relative;
+  overflow:hidden;
+}
+.skill-chip::before{
+  content:'';
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:2px;
+  background:var(--neon);
+  transform:scaleY(0);
+  transition:transform 0.3s;
+  transform-origin:bottom;
+}
+.skill-chip:hover{
+  border-color:var(--neon);
+  transform:translateX(4px);
+}
+.skill-chip:hover::before{transform:scaleY(1);}
+.skill-level{
+  width:36px;height:36px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.6rem;
+  color:var(--neon);
+  flex-shrink:0;
+}
+.skill-name{
+  font-family:'Rajdhani',sans-serif;
+  font-size:0.9rem;
+  font-weight:600;
+  color:var(--text);
+  letter-spacing:1px;
+}
+
+/* TESTIMONIALS */
+#testimonials{padding-top:8rem;}
+.testi-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  gap:1.5rem;
+}
+.testi-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:2rem;
+  position:relative;
+  transition:border-color 0.3s;
+}
+.testi-card:hover{border-color:var(--neon);}
+.testi-quote{
+  font-size:3rem;
+  color:var(--neon);
+  opacity:0.2;
+  font-family:'Orbitron',monospace;
+  line-height:1;
+  margin-bottom:1rem;
+}
+.testi-text{
+  font-size:1rem;
+  color:var(--muted);
+  line-height:1.8;
+  margin-bottom:1.5rem;
+  font-style:italic;
+}
+.testi-author{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+}
+.testi-avatar{
+  width:40px;height:40px;
+  border-radius:50%;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Orbitron',monospace;
+  font-size:0.7rem;
+  color:var(--neon);
+}
+.testi-info{}
+.testi-name{
+  font-family:'Rajdhani',sans-serif;
+  font-size:0.9rem;
+  font-weight:700;
+  color:#fff;
+}
+.testi-role{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.65rem;
+  color:var(--muted);
+  letter-spacing:1px;
+}
+
+/* CONTACT */
+#contact{padding-top:8rem;}
+.contact-wrap{
+  display:grid;
+  grid-template-columns:1fr 1.5fr;
+  gap:6rem;
+  align-items:start;
+}
+.contact-info{}
+.contact-info-item{
+  display:flex;
+  align-items:flex-start;
+  gap:1rem;
+  margin-bottom:2rem;
+}
+.contact-info-icon{
+  width:40px;height:40px;
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--neon);
+  font-family:'Orbitron',monospace;
+  font-size:0.7rem;
+  flex-shrink:0;
+}
+.contact-info-label{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.65rem;
+  letter-spacing:2px;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:0.3rem;
+}
+.contact-info-value{
+  font-size:0.95rem;
+  color:var(--text);
+}
+.socials{
+  display:flex;
+  gap:1rem;
+  margin-top:2rem;
+}
+.social-link{
+  width:40px;height:40px;
+  border:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.6rem;
+  color:var(--muted);
+  text-decoration:none;
+  letter-spacing:1px;
+  transition:all 0.3s;
+}
+.social-link:hover{
+  border-color:var(--neon);
+  color:var(--neon);
+  box-shadow:0 0 12px rgba(0,245,196,0.2);
+}
+
+.contact-form{}
+.form-group{
+  margin-bottom:1.5rem;
+  position:relative;
+}
+.form-label{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.65rem;
+  letter-spacing:3px;
+  color:var(--muted);
+  text-transform:uppercase;
+  display:block;
+  margin-bottom:0.6rem;
+}
+.form-input,
+.form-select,
+.form-textarea{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border);
+  color:var(--text);
+  font-family:'Rajdhani',sans-serif;
+  font-size:1rem;
+  padding:0.9rem 1.2rem;
+  outline:none;
+  transition:border-color 0.3s,box-shadow 0.3s;
+  -webkit-appearance:none;
+}
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus{
+  border-color:var(--neon);
+  box-shadow:0 0 12px rgba(0,245,196,0.1);
+}
+.form-textarea{
+  resize:vertical;
+  min-height:140px;
+  line-height:1.7;
+}
+.form-select option{background:var(--bg2);}
+.form-msg{
+  display:none;
+  margin-top:1rem;
+  padding:1rem 1.5rem;
+  background:rgba(0,245,196,0.06);
+  border:1px solid var(--border);
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:2px;
+  color:var(--neon);
+}
+.form-msg.show{display:block;}
+
+/* FOOTER */
+footer{
+  position:relative;
+  z-index:1;
+  padding:3rem 5rem;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.footer-copy{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.65rem;
+  color:var(--muted);
+  letter-spacing:2px;
+}
+.footer-copy span{color:var(--neon);}
+
+/* AI MODAL */
+#ai-overlay{
+  position:fixed;inset:0;
+  background:rgba(5,10,18,0.92);
+  backdrop-filter:blur(8px);
+  z-index:800;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  visibility:hidden;
+  transition:all 0.4s;
+}
+#ai-overlay.active{opacity:1;visibility:visible;}
+
+.ai-modal{
+  width:min(600px,90vw);
+  background:var(--bg2);
+  border:1px solid var(--border);
+  padding:3rem;
+  position:relative;
+  animation:modalIn 0.4s ease;
+  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));
+}
+.ai-modal::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--neon),var(--neon2));
+}
+.ai-close{
+  position:absolute;
+  top:1.2rem;right:1.5rem;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.7rem;
+  color:var(--muted);
+  cursor:none;
+  background:none;
+  border:none;
+  letter-spacing:2px;
+  transition:color 0.2s;
+}
+.ai-close:hover{color:var(--neon);}
+
+.ai-header{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  margin-bottom:2rem;
+}
+.ai-avatar{
+  width:44px;height:44px;
+  border:1px solid var(--neon);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Orbitron',monospace;
+  font-size:0.7rem;
+  color:var(--neon);
+  position:relative;
+}
+.ai-avatar::before{
+  content:'';
+  position:absolute;
+  inset:-3px;
+  border:1px solid rgba(0,245,196,0.2);
+  animation:ringPulse 2s linear infinite;
+}
+.ai-name{
+  font-family:'Orbitron',monospace;
+  font-size:0.8rem;
+  color:#fff;
+  letter-spacing:2px;
+}
+.ai-status{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.62rem;
+  color:var(--neon);
+  letter-spacing:2px;
+}
+
+.ai-greeting{
+  font-size:1.05rem;
+  color:var(--text);
+  line-height:1.8;
+  margin-bottom:2rem;
+  min-height:3rem;
+}
+.ai-greeting .cursor-blink{
+  display:inline-block;
+  width:2px;height:1em;
+  background:var(--neon);
+  vertical-align:text-bottom;
+  animation:blink 0.8s infinite;
+  margin-left:2px;
+}
+
+.ai-options{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0.8rem;
+  margin-bottom:1.5rem;
+}
+.ai-option{
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:1rem 1.2rem;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:2px;
+  color:var(--muted);
+  text-transform:uppercase;
+  cursor:none;
+  transition:all 0.3s;
+  text-align:left;
+}
+.ai-option:hover{
+  border-color:var(--neon);
+  color:var(--neon);
+  background:rgba(0,245,196,0.04);
+}
+
+.ai-response{
+  display:none;
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:1.5rem;
+  margin-bottom:1.5rem;
+  font-size:0.95rem;
+  color:var(--text);
+  line-height:1.8;
+  border-left:2px solid var(--neon);
+}
+.ai-response.show{display:block;}
+
+.ai-actions{
+  display:none;
+  gap:1rem;
+}
+.ai-actions.show{display:flex;}
+
+/* FLOATING AI BTN */
+#ai-float{
+  position:fixed;
+  bottom:2.5rem;right:2.5rem;
+  z-index:600;
+  width:54px;height:54px;
+  background:var(--bg2);
+  border:1px solid var(--neon);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:none;
+  transition:all 0.3s;
+  clip-path:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  box-shadow:0 0 20px rgba(0,245,196,0.15);
+}
+#ai-float:hover{
+  background:rgba(0,245,196,0.1);
+  box-shadow:0 0 30px rgba(0,245,196,0.3);
+}
+#ai-float svg{
+  width:22px;height:22px;
+  fill:none;
+  stroke:var(--neon);
+  stroke-width:1.5;
+}
+.ai-float-ping{
+  position:absolute;
+  width:100%;height:100%;
+  border:1px solid var(--neon);
+  animation:pingRing 2s ease-out infinite;
+  clip-path:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+}
+
+/* SCROLL REVEAL */
+.reveal{
+  opacity:0;
+  transform:translateY(30px);
+  transition:opacity 0.7s ease,transform 0.7s ease;
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{
+  to{opacity:1;transform:translateY(0);}
+  from{opacity:0;transform:translateY(24px);}
+}
+@keyframes fadeIn{
+  to{opacity:1;}from{opacity:0;}
+}
+@keyframes slideDown{
+  to{transform:translateY(0);}
+  from{transform:translateY(-100%);}
+}
+@keyframes letterUp{
+  to{opacity:1;transform:translateY(0);}
+  from{opacity:0;transform:translateY(30px);}
+}
+@keyframes scanBar{
+  to{left:100%;}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(0,245,196,0.4);}
+  50%{box-shadow:0 0 0 6px rgba(0,245,196,0);}
+}
+@keyframes blink{
+  0%,100%{opacity:1;}50%{opacity:0;}
+}
+@keyframes modalIn{
+  from{opacity:0;transform:scale(0.95) translateY(20px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+@keyframes borderSpin{
+  0%{background-position:0% 50%;}
+  100%{background-position:200% 50%;}
+}
+@keyframes ringPulse{
+  0%,100%{opacity:0.4;transform:scale(1);}
+  50%{opacity:0;transform:scale(1.3);}
+}
+@keyframes pingRing{
+  0%{opacity:0.6;transform:scale(1);}
+  100%{opacity:0;transform:scale(1.5);}
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:1rem 2rem;}
+  section{padding:6rem 2rem 4rem;}
+  #about{grid-template-columns:1fr;}
+  .contact-wrap{grid-template-columns:1fr;}
+  footer{padding:2rem;flex-direction:column;gap:1rem;text-align:center;}
+  .ai-options{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="progress-bar"></div>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="pre-name" id="pre-name"></div>
+  <div class="pre-bar"></div>
+  <div class="pre-pct" id="pre-pct">INITIALIZING...</div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="logo">PRINCE</a>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-tag">// Full-Stack Developer & AI Engineer</div>
+  <h1 class="hero-name">PRINCE<br><span class="hl">.</span></h1>
+  <p class="hero-sub">Building the future — <b>one line at a time</b></p>
+  <p class="hero-desc">I design and build intelligent digital experiences — from sleek web applications to autonomous AI agents. Where creativity meets engineering.</p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn">View Work</a>
+    <a href="#contact" class="btn btn-ghost">Contact Me</a>
+  </div>
+  <div class="avail-badge">
+    <span class="avail-dot"></span>
+    <span id="avail-text">Currently Available for Projects</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-left reveal">
+    <div class="about-img-wrap">
+      <div class="about-img-frame">
+        <div class="about-img-placeholder">
+          <span class="big-initial">P</span>
+          <span>PHOTO UPLOAD</span>
+        </div>
+        <div class="about-corner tl"></div>
+        <div class="about-corner tr"></div>
+        <div class="about-corner bl"></div>
+        <div class="about-corner br"></div>
+      </div>
+    </div>
+  </div>
+  <div class="about-right">
+    <div class="sec-header reveal">
+      <span class="sec-tag">// 01 — About Me</span>
+      <h2 class="sec-title">Who I <span>Am</span></h2>
+      <div class="sec-line"></div>
+    </div>
+    <p class="about-bio reveal">
+      I am a <span>multi-disciplinary technologist</span> with a passion for building intelligent, beautiful digital products. I bridge the gap between <span>cutting-edge AI</span> and real-world applications — crafting everything from responsive web platforms to autonomous agentic systems.
+    </p>
+
+    <div class="rpg-stats reveal">
+      <div class="rpg-stat">
+        <div class="rpg-stat-header"><span>Web Development</span><span>95%</span></div>
+        <div class="rpg-bar"><div class="rpg-fill" data-width="95"></div></div>
+      </div>
+      <div class="rpg-stat">
+        <div class="rpg-stat-header"><span>AI Engineering</span><span>90%</span></div>
+        <div class="rpg-bar"><div class="rpg-fill" data-width="90"></div></div>
+      </div>
+      <div class="rpg-stat">
+        <div class="rpg-stat-header"><span>Chatbot Development</span><span>92%</span></div>
+        <div class="rpg-bar"><div class="rpg-fill" data-width="92"></div></div>
+      </div>
+      <div class="rpg-stat">
+        <div class="rpg-stat-header"><span>Graphics Design</span><span>85%</span></div>
+        <div class="rpg-bar"><div class="rpg-fill" data-width="85"></div></div>
+      </div>
+    </div>
+
+    <div class="timeline reveal">
+      <div class="tl-item">
+        <div class="tl-year">2020</div>
+        <div class="tl-text">Started web development journey — HTML, CSS, JavaScript</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2021</div>
+        <div class="tl-text">Expanded into backend — Python, Flask, databases</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2022</div>
+        <div class="tl-text">Entered the AI space — chatbots, NLP, machine learning</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2023</div>
+        <div class="tl-text">Built first agentic AI systems and LLM-powered applications</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2024 — Present</div>
+        <div class="tl-text">Full-stack AI engineer — shipping production-grade intelligent products</div>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem;" class="reveal">
+      <a href="#" class="btn" id="cv-download-btn">Download Resume</a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="sec-header reveal">
+    <span class="sec-tag">// 02 — Services</span>
+    <h2 class="sec-title">What I <span>Do</span></h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <span class="service-icon">WD</span>
+      <div class="service-name">Web Development</div>
+      <p class="service-desc">Building fast, responsive, and visually stunning web applications from frontend to backend.</p>
+      <span class="service-tag">HTML / CSS / JS / Flask</span>
+      <button class="service-btn" onclick="openAI('Web Development')">Request Service &rarr;</button>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">AI</span>
+      <div class="service-name">AI Engineering</div>
+      <p class="service-desc">Designing and deploying intelligent AI systems, integrations, and LLM-powered applications.</p>
+      <span class="service-tag">LLMs / APIs / Pipelines</span>
+      <button class="service-btn" onclick="openAI('AI Engineering')">Request Service &rarr;</button>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">CB</span>
+      <div class="service-name">Chatbot Development</div>
+      <p class="service-desc">Building intelligent, context-aware chatbots for customer support, sales, and automation.</p>
+      <span class="service-tag">NLP / Dialogflow / Custom</span>
+      <button class="service-btn" onclick="openAI('Chatbot Development')">Request Service &rarr;</button>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">AG</span>
+      <div class="service-name">Agentic AI</div>
+      <p class="service-desc">Creating autonomous AI agents capable of multi-step reasoning and independent task execution.</p>
+      <span class="service-tag">Agents / Tools / Automation</span>
+      <button class="service-btn" onclick="openAI('Agentic AI Development')">Request Service &rarr;</button>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">GD</span>
+      <div class="service-name">Graphics Design</div>
+      <p class="service-desc">Crafting compelling visual identities, UI designs, and digital graphics that communicate with precision.</p>
+      <span class="service-tag">Branding / UI / Visuals</span>
+      <button class="service-btn" onclick="openAI('Graphics Design')">Request Service &rarr;</button>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon">CA</span>
+      <div class="service-name">Cover Art Design</div>
+      <p class="service-desc">Designing striking cover art for music, books, podcasts, and digital media that stops the scroll.</p>
+      <span class="service-tag">Music / Books / Podcasts</span>
+      <button class="service-btn" onclick="openAI('Cover Art Design')">Request Service &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="sec-header reveal">
+    <span class="sec-tag">// 03 — Projects</span>
+    <h2 class="sec-title">My <span>Work</span></h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="proj-tabs">
+    <button class="proj-tab active" data-cat="all">All</button>
+    <button class="proj-tab" data-cat="web">Web Dev</button>
+    <button class="proj-tab" data-cat="ai">AI / Chatbot</button>
+    <button class="proj-tab" data-cat="agentic">Agentic AI</button>
+    <button class="proj-tab" data-cat="graphics">Graphics</button>
+    <button class="proj-tab" data-cat="coverart">Cover Art</button>
+  </div>
+  <div class="proj-grid" id="proj-grid">
+    <!-- Populated by JS / Supabase -->
+    <div class="proj-card reveal" data-cat="web">
+      <div class="proj-thumb">PROJECT THUMBNAIL</div>
+      <div class="proj-body">
+        <div class="proj-cat">Web Development</div>
+        <div class="proj-name">QCoode Platform</div>
+        <p class="proj-desc">A full-stack queue management platform with real-time tracking, multi-role support, and AI-powered assistance.</p>
+        <div class="proj-links">
+          <a href="#" class="proj-link">Live Demo &rarr;</a>
+          <a href="#" class="proj-link">GitHub &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <div class="proj-card reveal" data-cat="ai">
+      <div class="proj-thumb">PROJECT THUMBNAIL</div>
+      <div class="proj-body">
+        <div class="proj-cat">AI Engineering</div>
+        <div class="proj-name">Ahmad AI Assistant</div>
+        <p class="proj-desc">Android floating AI assistant with wake word detection, voice commands, and local LLaMA integration.</p>
+        <div class="proj-links">
+          <a href="#" class="proj-link">View Project &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <div class="proj-card reveal" data-cat="agentic">
+      <div class="proj-thumb">PROJECT THUMBNAIL</div>
+      <div class="proj-body">
+        <div class="proj-cat">Agentic AI</div>
+        <div class="proj-name">Autonomous Agent System</div>
+        <p class="proj-desc">Multi-step autonomous AI agent capable of browsing, reasoning, and executing complex workflows.</p>
+        <div class="proj-links">
+          <a href="#" class="proj-link">View Project &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="sec-header reveal">
+    <span class="sec-tag">// 04 — Skills</span>
+    <h2 class="sec-title">Tech <span>Stack</span></h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-chip reveal"><div class="skill-level">95</div><div class="skill-name">HTML / CSS</div></div>
+    <div class="skill-chip reveal"><div class="skill-level">90</div><div class="skill-name">JavaScript</div></div>
+    <div class="skill-chip reveal"><div class="skill-level">88</div><div class="skill-name">Python</div></div>
+    <div class="skill-chip reveal"><div class="skill-level">85</div><div class="skill-name">Flask</div></div>
+    <div class="skill-chip reveal"><div class="skill-level">90</div><div class="skill-name">Supabase</div></div>
+    <div class="skill-chip reveal"><div class="skill-level">88</div><div class="skill-name">LLM APIs</div></div>
+    <div class="skill-chip reveal"><div class="skill-level">85</div><div class="skill-name">AI Agents</div></div>
+    <div class="skill-chip reveal"><div class="skill-level">82</div><div class="skill-name">NLP / Chatbots</div></div>
+    <div class="skill-chip reveal"><div class="skill-level">85</div><div class="skill-name">Figma</div></div>
+    <div class="skill-chip reveal"><div class="skill-level">80</div><div class="skill-name">Photoshop</div></div>
+    <div class="skill-chip reveal"><div class="skill-level">75</div><div class="skill-name">Android / Kotlin</div></div>
+    <div class="skill-chip reveal"><div class="skill-level">88</div><div class="skill-name">REST APIs</div></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="sec-header reveal">
+    <span class="sec-tag">// 05 — Testimonials</span>
+    <h2 class="sec-title">Client <span>Reviews</span></h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="testi-quote">"</div>
+      <p class="testi-text">Prince delivered an outstanding AI chatbot that transformed our customer support. Fast, intelligent, and exactly what we needed.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">JD</div>
+        <div class="testi-info">
+          <div class="testi-name">John Doe</div>
+          <div class="testi-role">CEO — TechStartup</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-quote">"</div>
+      <p class="testi-text">The web platform he built for us is fast, beautiful, and handles thousands of users daily without a single issue.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">SA</div>
+        <div class="testi-info">
+          <div class="testi-name">Sarah Adams</div>
+          <div class="testi-role">Product Manager</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-quote">"</div>
+      <p class="testi-text">The cover art Prince designed for my album exceeded every expectation. Stunning work that truly captured my vision.</p>
+      <div class="testi-author">
+        <div class="testi-avatar">MK</div>
+        <div class="testi-info">
+          <div class="testi-name">Mike Kayode</div>
+          <div class="testi-role">Music Artist</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="sec-header reveal">
+    <span class="sec-tag">// 06 — Contact</span>
+    <h2 class="sec-title">Get In <span>Touch</span></h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="contact-wrap">
+    <div class="contact-info reveal">
+      <div class="contact-info-item">
+        <div class="contact-info-icon">@</div>
+        <div>
+          <div class="contact-info-label">Email</div>
+          <div class="contact-info-value" id="contact-email">prince@example.com</div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-icon">WA</div>
+        <div>
+          <div class="contact-info-label">WhatsApp</div>
+          <div class="contact-info-value" id="contact-whatsapp">+234 000 000 0000</div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-icon">LC</div>
+        <div>
+          <div class="contact-info-label">Location</div>
+          <div class="contact-info-value">Lagos, Nigeria</div>
+        </div>
+      </div>
+      <div class="socials">
+        <a href="#" class="social-link">GH</a>
+        <a href="#" class="social-link">LI</a>
+        <a href="#" class="social-link">TW</a>
+        <a href="#" class="social-link">IG</a>
+      </div>
+      <div style="margin-top:2rem;">
+        <a href="#" class="btn" id="book-call-btn">Book a Call</a>
+      </div>
+    </div>
+
+    <div class="contact-form reveal">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-input" id="f-name" placeholder="Your name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="f-email" placeholder="your@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Service Needed</label>
+        <select class="form-select" id="f-service">
+          <option value="">Select a service</option>
+          <option>Web Development</option>
+          <option>AI Engineering</option>
+          <option>Chatbot Development</option>
+          <option>Agentic AI Development</option>
+          <option>Graphics Design</option>
+          <option>Cover Art Design</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-textarea" id="f-msg" placeholder="Tell me about your project..."></textarea>
+      </div>
+      <button class="btn" onclick="submitForm()">Send Message</button>
+      <div class="form-msg" id="form-msg">
+        MESSAGE RECEIVED. Prince will respond within 24 hours.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">
+    &copy; 2025 <span>PRINCE</span> — All rights reserved
+  </div>
+  <div class="footer-copy">
+    Built with <span>precision</span> &amp; <span>passion</span>
+  </div>
+</footer>
+
+<!-- AI MODAL -->
+<div id="ai-overlay">
+  <div class="ai-modal">
+    <button class="ai-close" onclick="closeAI()">ESC / CLOSE</button>
+    <div class="ai-header">
+      <div class="ai-avatar">AI</div>
+      <div>
+        <div class="ai-name">PRINCE.AI</div>
+        <div class="ai-status">ONLINE — READY TO ASSIST</div>
+      </div>
+    </div>
+    <div class="ai-greeting" id="ai-greeting"></div>
+    <div class="ai-options" id="ai-options">
+      <button class="ai-option" onclick="selectService('Web Development')">Web Development</button>
+      <button class="ai-option" onclick="selectService('AI Engineering')">AI Engineering</button>
+      <button class="ai-option" onclick="selectService('Chatbot Development')">Chatbot Development</button>
+      <button class="ai-option" onclick="selectService('Agentic AI Development')">Agentic AI</button>
+      <button class="ai-option" onclick="selectService('Graphics Design')">Graphics Design</button>
+      <button class="ai-option" onclick="selectService('Cover Art Design')">Cover Art Design</button>
+    </div>
+    <div class="ai-response" id="ai-response"></div>
+    <div class="ai-actions" id="ai-actions">
+      <a href="#projects" class="btn" onclick="closeAI()">View Work</a>
+      <a href="#contact" class="btn btn-ghost" onclick="closeAI()">Contact Me</a>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING AI BUTTON -->
+<div id="ai-float" onclick="openAI()">
+  <div class="ai-float-ping"></div>
+  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="var(--neon)"/></svg>
+</div>
+
+<script>
+// ── CURSOR ──
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cur.style.left=mx-5+'px';
+  cur.style.top=my-5+'px';
+});
+setInterval(()=>{
+  rx+=(mx-rx)*0.15;
+  ry+=(my-ry)*0.15;
+  ring.style.left=rx-18+'px';
+  ring.style.top=ry-18+'px';
+},16);
+document.querySelectorAll('a,button,.proj-tab,.ai-option,.service-card,.proj-card,.skill-chip').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    cur.style.transform='scale(2.5)';
+    ring.style.transform='scale(0.5)';
+    ring.style.borderColor='rgba(0,245,196,0.8)';
+  });
+  el.addEventListener('mouseleave',()=>{
+    cur.style.transform='scale(1)';
+    ring.style.transform='scale(1)';
+    ring.style.borderColor='rgba(0,245,196,0.5)';
+  });
+});
+
+// ── PRELOADER ──
+const nameEl=document.getElementById('pre-name');
+const pctEl=document.getElementById('pre-pct');
+const letters='PRINCE'.split('');
+letters.forEach((l,i)=>{
+  const s=document.createElement('span');
+  s.textContent=l;
+  s.style.animationDelay=i*0.1+'s';
+  nameEl.appendChild(s);
+});
+let pct=0;
+const pctInt=setInterval(()=>{
+  pct+=Math.random()*15;
+  if(pct>=100){pct=100;clearInterval(pctInt);}
+  pctEl.textContent=Math.floor(pct)+'%';
+},120);
+setTimeout(()=>{
+  document.getElementById('preloader').classList.add('hidden');
+  setTimeout(()=>openAI(),800);
+},2400);
+
+// ── SCROLL PROGRESS ──
+window.addEventListener('scroll',()=>{
+  const s=document.documentElement.scrollTop;
+  const h=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+  document.getElementById('progress-bar').style.width=(s/h*100)+'%';
+});
+
+// ── SCROLL REVEAL ──
+const reveals=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      // RPG bars
+      e.target.querySelectorAll('.rpg-fill').forEach(b=>{
+        b.style.width=b.dataset.width+'%';
+      });
+    }
+  });
+},{threshold:0.15});
+reveals.forEach(r=>obs.observe(r));
+
+// ── PROJECT FILTER ──
+document.querySelectorAll('.proj-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.proj-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const cat=tab.dataset.cat;
+    document.querySelectorAll('.proj-card').forEach(card=>{
+      if(cat==='all'||card.dataset.cat===cat){
+        card.style.display='block';
+      }else{
+        card.style.display='none';
+      }
+    });
+  });
+});
+
+// ── AI MODAL ──
+const responses={
+  'Web Development':'I specialize in building fast, scalable, and visually striking web applications. Whether you need a landing page, a full SaaS platform, or an internal tool — I deliver production-grade solutions using modern web technologies.',
+  'AI Engineering':'I design and deploy sophisticated AI systems powered by the latest large language models. From API integrations to custom AI pipelines — I help businesses harness the real power of artificial intelligence.',
+  'Chatbot Development':'I build intelligent, context-aware chatbots that handle customer support, lead generation, and business automation. My chatbots understand natural language and deliver seamless user experiences.',
+  'Agentic AI Development':'I develop autonomous AI agents capable of multi-step reasoning, tool usage, and independent task execution. These systems work around the clock to automate complex workflows with minimal human intervention.',
+  'Graphics Design':'I craft compelling visual identities, UI mockups, and digital graphics that communicate with precision and creativity. Every design is purposeful, clean, and tailored to your brand.',
+  'Cover Art Design':'I design eye-catching cover art for music, books, podcasts, and digital media. My work is bold, unique, and crafted to make an immediate impression.'
+};
+
+let typeInterval=null;
+
+function typeText(el,text,cb){
+  el.innerHTML='<span class="cursor-blink"></span>';
+  let i=0;
+  typeInterval=setInterval(()=>{
+    if(i<text.length){
+      el.innerHTML=text.slice(0,i+1)+'<span class="cursor-blink"></span>';
+      i++;
+    }else{
+      el.innerHTML=text;
+      clearInterval(typeInterval);
+      if(cb)cb();
+    }
+  },28);
+}
+
+function openAI(preselect){
+  document.getElementById('ai-response').classList.remove('show');
+  document.getElementById('ai-actions').classList.remove('show');
+  document.getElementById('ai-options').style.display='grid';
+  document.getElementById('ai-overlay').classList.add('active');
+  if(typeInterval)clearInterval(typeInterval);
+  const greeting='Welcome. I am Prince\'s AI assistant. How may I direct your visit today — which service are you interested in?';
+  typeText(document.getElementById('ai-greeting'),greeting,()=>{
+    if(preselect)setTimeout(()=>selectService(preselect),300);
+  });
+}
+
+function closeAI(){
+  document.getElementById('ai-overlay').classList.remove('active');
+  if(typeInterval)clearInterval(typeInterval);
+}
+
+function selectService(svc){
+  const optEl=document.getElementById('ai-options');
+  optEl.style.display='none';
+  const resp=responses[svc]||'Thank you for your interest. Please use the contact form below and Prince will get back to you shortly.';
+  const resEl=document.getElementById('ai-response');
+  resEl.classList.add('show');
+  typeText(resEl,resp,()=>{
+    document.getElementById('ai-actions').classList.add('show');
+  });
+}
+
+document.getElementById('ai-overlay').addEventListener('click',e=>{
+  if(e.target===document.getElementById('ai-overlay'))closeAI();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAI();});
+
+// ── CONTACT FORM ──
+function submitForm(){
+  const name=document.getElementById('f-name').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  if(!name||!email){
+    alert('Please fill in your name and email.');
+    return;
+  }
+  document.getElementById('form-msg').classList.add('show');
+  document.getElementById('f-name').value='';
+  document.getElementById('f-email').value='';
+  document.getElementById('f-msg').value='';
+  document.getElementById('f-service').value='';
+}
+</script>
+</body>
+</html>
